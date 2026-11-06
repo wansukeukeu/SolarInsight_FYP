@@ -28,10 +28,13 @@ page = st.sidebar.radio("Navigation", ["Dashboard", "Energy Planner", "Forecast"
 st.sidebar.markdown("---")
 st.sidebar.subheader("System Configuration")
 
-# Gemini API Key Input
-api_key = st.sidebar.text_input("Gemini API Key (For AI Insights)", type="password")
-if api_key:
+# Secure Gemini API Key Configuration
+try:
+    api_key = st.secrets["GEMINI_API_KEY"] # API Key is using another google account - to tackle limit issue
     genai.configure(api_key=api_key)
+except KeyError:
+    st.sidebar.error("Missing API Key in Secrets.")
+    api_key = None
 
 # Complete Malaysia Mapping (13 States, 3 FTs)
 location = st.sidebar.selectbox("Select Location", [
